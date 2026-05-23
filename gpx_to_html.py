@@ -50,10 +50,10 @@ PR_ZONES = [
     {'code':'PR6.2', 'name':'Levada do Alecrim',             'fee':'€4.50','status':'open',
      'lat':32.7680,'lon':-17.0820,'radius':1500,
      'desc':'Rabacal → Nascente Levada do Alecrim.'},
-    # ── PR5 Vereda das Funduras (FERMÉ – glissement de terrain 2026) ──
-    {'code':'PR5',   'name':'Vereda das Funduras',           'fee':'€4.50','status':'closed',
+    # ── PR5 Vereda das Funduras ──
+    {'code':'PR5',   'name':'Vereda das Funduras',           'fee':'€4.50','status':'open',
      'lat':32.7470,'lon':-16.8000,'radius':3000,
-     'desc':'Portela → Maroços. FERMÉ en 2026 suite à glissement de terrain.'},
+     'desc':'Portela → Maroços, 8.7 km. Forêt laurisilva et vue sur Penha d\'Águia.'},
     # ── PR8 Ponta de São Lourenço ──
     {'code':'PR8',   'name':'Vereda da Ponta de São Lourenço','fee':'€4.50','status':'open',
      'lat':32.7364,'lon':-16.7197,'radius':2500,
