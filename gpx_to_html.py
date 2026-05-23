@@ -9,10 +9,107 @@ from pathlib import Path
 NS = {'gpx': 'http://www.topografix.com/GPX/1/1'}
 
 STAGES = [
-    {'file': 'J1MIUT2026.gpx',       'label': 'J1', 'color': '#e74c3c'},
-    {'file': 'J2MIUT2026.gpx',       'label': 'J2', 'color': '#e67e22'},
-    {'file': 'J3MIUT2026.gpx',       'label': 'J3', 'color': '#27ae60'},
-    {'file': 'J4varianteMIUT2026.gpx','label': 'J4 Variante', 'color': '#8e44ad'},
+    {'file': 'J1MIUT2026.gpx',        'label': 'J1', 'color': '#e74c3c'},
+    {'file': 'J2MIUT2026.gpx',        'label': 'J2', 'color': '#e67e22'},
+    {'file': 'J3MIUT2026.gpx',        'label': 'J3', 'color': '#27ae60'},
+    {'file': 'J4varianteMIUT2026.gpx', 'label': 'J4 Variante', 'color': '#8e44ad'},
+]
+
+# Sentiers PR classifiés payants – source IFCN / Simplifica Madeira 2026
+# fee: '€10.50' | '€4.50' | 'Gratuit'
+# status: 'open' | 'partial' | 'closed'
+PR_ZONES = [
+    # ── PR1 réseau – Pico Ruivo (€10.50 – 1 billet = PR1 + PR1.1 + PR1.2) ──
+    {'code':'PR1',   'name':'Vereda do Areeiro',          'fee':'€10.50','status':'open',
+     'lat':32.7255,'lon':-16.9322,'radius':1800,
+     'desc':'Pico do Areeiro → Pico Ruivo (1862 m). Billet inclut PR1.1 et PR1.2.'},
+    {'code':'PR1.1', 'name':'Vereda da Ilha',              'fee':'€10.50','status':'open',
+     'lat':32.7294,'lon':-16.9396,'radius':1500,
+     'desc':'Pico Ruivo → Ilha (inclus dans billet PR1).'},
+    {'code':'PR1.2', 'name':'Vereda do Pico Ruivo',        'fee':'€10.50','status':'open',
+     'lat':32.7356,'lon':-16.9481,'radius':1500,
+     'desc':'Achada do Teixeira → Pico Ruivo (inclus dans billet PR1).'},
+    {'code':'PR1.3', 'name':'Vereda da Encumeada',         'fee':'€10.50','status':'closed',
+     'lat':32.7390,'lon':-16.9750,'radius':2500,
+     'desc':'Pico Ruivo → Encumeada. FERMÉ en 2026.'},
+    # ── PR2 Urzal ──
+    {'code':'PR2',   'name':'Vereda do Urzal',             'fee':'€4.50','status':'open',
+     'lat':32.7422,'lon':-16.9374,'radius':4000,
+     'desc':'Curral das Freiras → Boaventura.'},
+    # ── PR4 Levada do Barreiro ──
+    {'code':'PR4',   'name':'Levada do Barreiro',          'fee':'€4.50','status':'partial',
+     'lat':32.7650,'lon':-17.0450,'radius':2200,
+     'desc':'Poço da Neve → Casa do Barreiro (Paul da Serra). Partiellement ouvert.'},
+    # ── PR6 réseau – Rabacal ──
+    {'code':'PR6',   'name':'Levada das 25 Fontes',        'fee':'€4.50','status':'open',
+     'lat':32.7625,'lon':-17.0892,'radius':2000,
+     'desc':'Rabacal → 25 Fontes. Laurisilva UNESCO.'},
+    {'code':'PR6.1', 'name':'Levada do Risco',             'fee':'€4.50','status':'open',
+     'lat':32.7730,'lon':-17.0870,'radius':1500,
+     'desc':'Rabacal → Cascata do Risco.'},
+    {'code':'PR6.2', 'name':'Levada do Alecrim',           'fee':'€4.50','status':'open',
+     'lat':32.7680,'lon':-17.0820,'radius':1500,
+     'desc':'Rabacal → Nascente Levada do Alecrim.'},
+    # ── PR7 Levada do Moinho (FERMÉ) ──
+    {'code':'PR7',   'name':'Levada do Moinho',            'fee':'€4.50','status':'closed',
+     'lat':32.8000,'lon':-17.0500,'radius':2000,
+     'desc':'FERMÉ en 2026.'},
+    # ── PR8 Ponta de São Lourenço ──
+    {'code':'PR8',   'name':'Vereda da Ponta de São Lourenço','fee':'€4.50','status':'open',
+     'lat':32.7364,'lon':-16.7197,'radius':2500,
+     'desc':'Caniçal → Ponta de São Lourenço. Péninsule volcanique est.'},
+    # ── PR9 Caldeirão Verde (FERMÉ) ──
+    {'code':'PR9',   'name':'Levada do Caldeirão Verde',   'fee':'€4.50','status':'closed',
+     'lat':32.7583,'lon':-16.9208,'radius':2500,
+     'desc':'Queimadas → Caldeirão Verde. FERMÉ en 2026.'},
+    # ── PR10 Levada do Furado (FERMÉ) ──
+    {'code':'PR10',  'name':'Levada do Furado',            'fee':'€4.50','status':'closed',
+     'lat':32.7472,'lon':-16.8889,'radius':3000,
+     'desc':'Ribeiro Frio → Porto da Cruz. FERMÉ en 2026.'},
+    # ── PR11 Balcões (GRATUIT) ──
+    {'code':'PR11',  'name':'Vereda dos Balcões',          'fee':'Gratuit','status':'open',
+     'lat':32.7450,'lon':-16.8808,'radius':1200,
+     'desc':'Ribeiro Frio. GRATUIT – aucune réservation requise.'},
+    # ── PR12 Encumeada ──
+    {'code':'PR12',  'name':'Caminho Real da Encumeada',   'fee':'€4.50','status':'partial',
+     'lat':32.7472,'lon':-17.0094,'radius':2500,
+     'desc':'Serra de Água → Encumeada. Partiellement ouvert.'},
+    # ── PR13 Fanal (GRATUIT) ──
+    {'code':'PR13',  'name':'Vereda do Fanal',             'fee':'Gratuit','status':'open',
+     'lat':32.7900,'lon':-17.0950,'radius':1800,
+     'desc':'Fanal – forêt de laurisilva. GRATUIT.'},
+    # ── PR14 Levada dos Cedros ──
+    {'code':'PR14',  'name':'Levada dos Cedros',           'fee':'€4.50','status':'open',
+     'lat':32.7820,'lon':-17.1050,'radius':2000,
+     'desc':'Fanal → Levada dos Cedros. Forêt laurisilva UNESCO.'},
+    # ── PR15 Ribeira da Janela ──
+    {'code':'PR15',  'name':'Vereda da Ribeira da Janela', 'fee':'€4.50','status':'open',
+     'lat':32.8210,'lon':-17.1320,'radius':1500,
+     'desc':'Ribeira da Janela. Descente avec vues mer.'},
+    # ── PR16 Fajã do Rodrigues ──
+    {'code':'PR16',  'name':'Levada Fajã do Rodrigues',    'fee':'€4.50','status':'open',
+     'lat':32.8040,'lon':-17.0820,'radius':2000,
+     'desc':'São Vicente. Tunnels levada.'},
+    # ── PR17 Pináculo e Folhadal ──
+    {'code':'PR17',  'name':'Caminho do Pináculo e Folhadal','fee':'€4.50','status':'open',
+     'lat':32.7690,'lon':-17.0240,'radius':2500,
+     'desc':'Encumeada → Pináculo. Crêtes spectaculaires.'},
+    # ── PR18 Levada do Rei ──
+    {'code':'PR18',  'name':'Levada do Rei',               'fee':'€4.50','status':'open',
+     'lat':32.8083,'lon':-16.9483,'radius':2000,
+     'desc':'São Jorge. Levada dans la forêt.'},
+    # ── PR19 Vereda Real do Paul do Mar ──
+    {'code':'PR19',  'name':'Vereda Real do Paul do Mar',  'fee':'€4.50','status':'open',
+     'lat':32.7260,'lon':-17.2170,'radius':1500,
+     'desc':'Paul do Mar → Prazeres. Côte sud-ouest.'},
+    # ── PR21 Caminho do Norte ──
+    {'code':'PR21',  'name':'Caminho do Norte',            'fee':'€4.50','status':'open',
+     'lat':32.7750,'lon':-17.0650,'radius':3000,
+     'desc':'Traversée nord de l\'île.'},
+    # ── PR22 Vereda do Chão dos Louros ──
+    {'code':'PR22',  'name':'Vereda do Chão dos Louros',   'fee':'€4.50','status':'open',
+     'lat':32.7600,'lon':-16.9500,'radius':2000,
+     'desc':'Forêt de laurisilva, zone centrale.'},
 ]
 
 def haversine(lat1, lon1, lat2, lon2):
@@ -26,14 +123,12 @@ def haversine(lat1, lon1, lat2, lon2):
 def parse_gpx(filepath):
     tree = ET.parse(filepath)
     root = tree.getroot()
-
     meta = root.find('gpx:metadata', NS)
     name = ''
     if meta is not None:
         n = meta.find('gpx:name', NS)
         if n is not None:
             name = n.text or ''
-
     points = []
     for rte in root.findall('gpx:rte', NS):
         for pt in rte.findall('gpx:rtept', NS):
@@ -42,7 +137,6 @@ def parse_gpx(filepath):
             e = pt.find('gpx:ele', NS)
             ele = float(e.text) if e is not None else 0
             points.append((lat, lon, ele))
-
     waypoints = []
     for wpt in root.findall('gpx:wpt', NS):
         lat = float(wpt.get('lat'))
@@ -52,7 +146,6 @@ def parse_gpx(filepath):
         wpt_name = n.text if n is not None else ''
         wpt_type = t.text if t is not None else ''
         waypoints.append({'lat': lat, 'lon': lon, 'name': wpt_name or '', 'type': wpt_type or ''})
-
     return name, points, waypoints
 
 def compute_stats(points):
@@ -86,13 +179,9 @@ def build_stage_data(base_dir):
             continue
         name, points, waypoints = parse_gpx(path)
         dist, gain, loss, min_e, max_e, cum = compute_stats(points)
-
-        # Sous-échantillonnage pour la carte (max 1500 pts) et profil (max 600 pts)
         coords = sample([(p[0], p[1]) for p in points], 1500)
         elev_pts = sample(points, 600)
         elev_cum  = sample(cum, 600)
-
-        # Filtrage des waypoints : Begin, End, Waypoint nommés, forks nommés
         important_wpts = []
         for w in waypoints:
             t = w['type']
@@ -103,7 +192,6 @@ def build_stage_data(base_dir):
                 important_wpts.append(w)
             elif 'fork' in t.lower() and nm:
                 important_wpts.append(w)
-
         data.append({
             'label':    s['label'],
             'name':     name,
@@ -122,7 +210,7 @@ def build_stage_data(base_dir):
         })
     return data
 
-HTML_TEMPLATE = '''<!DOCTYPE html>
+HTML_TEMPLATE = r'''<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
@@ -138,30 +226,36 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: #1a1a2e; color: #
 /* ── Header ── */
 #header {
   background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
-  padding: 14px 20px;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
-  box-shadow: 0 2px 8px rgba(0,0,0,.5);
-  flex-shrink: 0;
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,.5); flex-shrink: 0;
 }
-#header h1 { font-size: 1.4rem; letter-spacing: 2px; color: #e2b96f; white-space: nowrap; }
-#header h1 small { font-size: .75rem; color: #aaa; display: block; letter-spacing: 0; }
-#legend { display: flex; gap: 10px; flex-wrap: wrap; }
+#header h1 { font-size: 1.3rem; letter-spacing: 2px; color: #e2b96f; white-space: nowrap; }
+#header h1 small { font-size: .72rem; color: #aaa; display: block; letter-spacing: 0; }
+
+/* ── Legend stages ── */
+#legend { display: flex; gap: 8px; flex-wrap: wrap; }
 .legend-item {
   display: flex; align-items: center; gap: 7px;
-  background: rgba(255,255,255,.07);
-  border-radius: 20px; padding: 5px 12px;
-  cursor: pointer; transition: background .2s;
-  border: 2px solid transparent;
-  user-select: none;
+  background: rgba(255,255,255,.07); border-radius: 20px; padding: 4px 11px;
+  cursor: pointer; transition: background .2s; border: 2px solid transparent; user-select: none;
 }
 .legend-item:hover { background: rgba(255,255,255,.14); }
 .legend-item.active { border-color: #fff; }
-.legend-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
-.legend-label { font-size: .82rem; font-weight: 600; }
-.legend-dist { font-size: .75rem; color: #bbb; }
+.legend-dot { width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0; }
+.legend-label { font-size: .8rem; font-weight: 600; }
+.legend-dist { font-size: .72rem; color: #bbb; }
+
+/* ── PR toggle button ── */
+#pr-toggle {
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(255,180,0,.12); border: 2px solid rgba(255,180,0,.4);
+  border-radius: 20px; padding: 4px 13px; cursor: pointer;
+  font-size: .8rem; font-weight: 700; color: #f1c40f;
+  transition: all .2s; white-space: nowrap; user-select: none;
+}
+#pr-toggle:hover { background: rgba(255,180,0,.22); }
+#pr-toggle.active { background: rgba(255,180,0,.25); border-color: #f1c40f; }
 
 /* ── Main layout ── */
 #main { display: flex; flex: 1; overflow: hidden; }
@@ -169,15 +263,13 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: #1a1a2e; color: #
 
 /* ── Side panel ── */
 #panel {
-  width: 320px; flex-shrink: 0;
-  background: #16213e;
-  display: flex; flex-direction: column;
-  overflow: hidden;
+  width: 320px; flex-shrink: 0; background: #16213e;
+  display: flex; flex-direction: column; overflow: hidden;
   border-left: 1px solid #2a3a5e;
 }
 #panel-tabs { display: flex; border-bottom: 1px solid #2a3a5e; }
 .tab-btn {
-  flex: 1; padding: 10px 4px; font-size: .78rem; font-weight: 700;
+  flex: 1; padding: 9px 3px; font-size: .76rem; font-weight: 700;
   background: transparent; color: #888; border: none; cursor: pointer;
   border-bottom: 3px solid transparent; transition: all .2s;
 }
@@ -186,41 +278,71 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: #1a1a2e; color: #
 .tab-content { display: none; flex: 1; flex-direction: column; overflow-y: auto; padding: 14px; }
 .tab-content.active { display: flex; }
 
-/* ── Stats cards ── */
+/* ── Stats ── */
 .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
 .stat-card {
-  background: rgba(255,255,255,.06); border-radius: 8px; padding: 10px;
-  text-align: center;
+  background: rgba(255,255,255,.06); border-radius: 8px; padding: 10px; text-align: center;
 }
-.stat-card .val { font-size: 1.3rem; font-weight: 700; color: var(--stage-color, #e2b96f); }
-.stat-card .lbl { font-size: .68rem; color: #999; text-transform: uppercase; letter-spacing: .5px; margin-top: 2px; }
+.stat-card .val { font-size: 1.25rem; font-weight: 700; color: var(--stage-color, #e2b96f); }
+.stat-card .lbl { font-size: .67rem; color: #999; text-transform: uppercase; letter-spacing: .5px; margin-top: 2px; }
 .stat-card.full { grid-column: 1 / -1; }
-
-/* ── Elevation chart ── */
 .chart-wrap { flex: 1; min-height: 160px; position: relative; }
 
 /* ── Waypoints list ── */
 .wpt-list { list-style: none; }
 .wpt-item {
   display: flex; align-items: flex-start; gap: 10px;
-  padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.06);
+  padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.06); cursor: pointer;
 }
+.wpt-item:hover { background: rgba(255,255,255,.04); }
 .wpt-icon {
   width: 24px; height: 24px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: .9rem; flex-shrink: 0; margin-top: 1px;
 }
-.wpt-text .wpt-name { font-size: .84rem; font-weight: 600; }
-.wpt-text .wpt-type { font-size: .72rem; color: #888; }
+.wpt-text .wpt-name { font-size: .83rem; font-weight: 600; }
+.wpt-text .wpt-type { font-size: .71rem; color: #888; }
 .section-title {
-  font-size: .72rem; font-weight: 700; text-transform: uppercase;
+  font-size: .71rem; font-weight: 700; text-transform: uppercase;
   letter-spacing: 1px; color: #aaa; margin: 10px 0 6px;
 }
+
+/* ── PR panel tab ── */
+.pr-list { list-style: none; }
+.pr-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.06); cursor: pointer;
+}
+.pr-item:hover { background: rgba(255,255,255,.04); }
+.pr-badge {
+  min-width: 54px; text-align: center; padding: 3px 6px;
+  border-radius: 10px; font-size: .7rem; font-weight: 800;
+  flex-shrink: 0;
+}
+.pr-badge.expensive { background: #c0392b; color: #fff; }
+.pr-badge.standard  { background: #e67e22; color: #fff; }
+.pr-badge.free      { background: #27ae60; color: #fff; }
+.pr-badge.closed    { background: #555; color: #aaa; text-decoration: line-through; }
+.pr-info .pr-code   { font-size: .8rem; font-weight: 700; color: #ddd; }
+.pr-info .pr-name   { font-size: .72rem; color: #aaa; }
+.pr-info .pr-status-closed { font-size: .68rem; color: #e74c3c; font-weight: 700; }
 
 /* ── Scrollbar ── */
 #panel ::-webkit-scrollbar { width: 5px; }
 #panel ::-webkit-scrollbar-track { background: transparent; }
 #panel ::-webkit-scrollbar-thumb { background: #2a3a5e; border-radius: 4px; }
+
+/* ── PR popup ── */
+.pr-popup { font-family: 'Segoe UI', Arial, sans-serif; min-width: 200px; }
+.pr-popup .pr-popup-code { font-weight: 800; font-size: 1rem; margin-bottom: 4px; }
+.pr-popup .pr-popup-name { color: #555; font-size: .85rem; margin-bottom: 6px; }
+.pr-popup .pr-popup-fee  { display: inline-block; padding: 2px 8px; border-radius: 8px; font-weight: 700; font-size: .82rem; margin-bottom: 5px; }
+.pr-popup .pr-popup-fee.exp   { background: #c0392b; color: #fff; }
+.pr-popup .pr-popup-fee.std   { background: #e67e22; color: #fff; }
+.pr-popup .pr-popup-fee.free  { background: #27ae60; color: #fff; }
+.pr-popup .pr-popup-fee.closed{ background: #999; color: #fff; }
+.pr-popup .pr-popup-desc { font-size: .8rem; color: #444; margin-top: 4px; }
+.pr-popup .pr-popup-link { font-size: .75rem; color: #3498db; margin-top: 6px; display: block; }
 </style>
 </head>
 <body>
@@ -228,6 +350,7 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: #1a1a2e; color: #
 <div id="header">
   <h1>MIUT 2026 <small>Madère Ultra-Trail</small></h1>
   <div id="legend"></div>
+  <div id="pr-toggle" onclick="togglePR()">🔒 Zones PR payantes</div>
 </div>
 
 <div id="main">
@@ -239,12 +362,13 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: #1a1a2e; color: #
 </div>
 
 <script>
-const STAGES = __STAGES_JSON__;
+const STAGES   = __STAGES_JSON__;
+const PR_ZONES = __PR_ZONES_JSON__;
 
 // ── Map ────────────────────────────────────────────────────────────────────
 const map = L.map('map', { zoomControl: true });
 L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-  attribution: '© OpenTopoMap',
+  attribution: '© OpenTopoMap | IFCN Madeira',
   maxZoom: 17
 }).addTo(map);
 
@@ -252,8 +376,7 @@ const allBounds = [];
 
 // ── Waypoint icons ─────────────────────────────────────────────────────────
 function wptIcon(type, color) {
-  const isBegin = type === 'Begin';
-  const isEnd   = type === 'End';
+  const isBegin = type === 'Begin', isEnd = type === 'End';
   const isFork  = type.toLowerCase().includes('fork');
   const emoji   = isBegin ? '🏁' : isEnd ? '🏆' : isFork ? '⚠' : '📍';
   const bg      = isBegin ? '#27ae60' : isEnd ? '#e74c3c' : color;
@@ -262,63 +385,132 @@ function wptIcon(type, color) {
     html: `<div style="background:${bg};width:28px;height:28px;border-radius:50%;border:2px solid #fff;
            display:flex;align-items:center;justify-content:center;font-size:14px;
            box-shadow:0 2px 6px rgba(0,0,0,.5)">${emoji}</div>`,
-    iconSize: [28, 28],
-    iconAnchor: [14, 14],
+    iconSize: [28, 28], iconAnchor: [14, 14],
   });
 }
 
-// ── Draw tracks & waypoints ────────────────────────────────────────────────
+// ── Draw MIUT tracks ───────────────────────────────────────────────────────
 const polylines = [];
 STAGES.forEach((s, i) => {
-  const poly = L.polyline(s.coords, {
-    color: s.color, weight: 4, opacity: 0.85, smoothFactor: 1
-  }).addTo(map);
-  poly.bindTooltip(`<b>${s.label}</b> – ${s.name}<br>${s.stats.dist_km} km • +${s.stats.gain_m}m`, {sticky: true});
+  const poly = L.polyline(s.coords, { color: s.color, weight: 4, opacity: 0.85, smoothFactor: 1 }).addTo(map);
+  poly.bindTooltip(`<b>${s.label}</b> – ${s.name}<br>${s.stats.dist_km} km · +${s.stats.gain_m}m`, {sticky:true});
   polylines.push(poly);
   allBounds.push(...s.coords);
-
   s.waypoints.forEach(w => {
     L.marker([w.lat, w.lon], { icon: wptIcon(w.type, s.color) })
       .bindPopup(`<b>${w.name || w.type}</b><br><small style="color:#888">${s.label} – ${s.name}</small>`)
       .addTo(map);
   });
 });
-
 if (allBounds.length) map.fitBounds(allBounds);
 
-// ── Number labels on track (start of each stage) ───────────────────────────
+// ── Stage number labels ────────────────────────────────────────────────────
 STAGES.forEach(s => {
   if (!s.coords.length) return;
   const [lat, lon] = s.coords[0];
   L.marker([lat, lon], {
     icon: L.divIcon({
       className: '',
-      html: `<div style="background:${s.color};color:#fff;font-weight:900;font-size:13px;
+      html: `<div style="background:${s.color};color:#fff;font-weight:900;font-size:12px;
              padding:3px 9px;border-radius:12px;border:2px solid #fff;
              box-shadow:0 2px 6px rgba(0,0,0,.6);white-space:nowrap">${s.label}</div>`,
       iconAnchor: [0, 14],
     }),
-    zIndexOffset: 1000,
-    interactive: false,
+    zIndexOffset: 1000, interactive: false,
   }).addTo(map);
 });
 
-// ── Legend ─────────────────────────────────────────────────────────────────
+// ── PR Zones layer ─────────────────────────────────────────────────────────
+const prLayerGroup = L.layerGroup();
+let prVisible = false;
+
+function feeClass(pr) {
+  if (pr.fee === 'Gratuit') return 'free';
+  if (pr.fee === '€10.50')  return 'exp';
+  if (pr.status === 'closed') return 'closed';
+  return 'std';
+}
+
+function prCircleColor(pr) {
+  if (pr.status === 'closed')  return '#777';
+  if (pr.fee === 'Gratuit')    return '#27ae60';
+  if (pr.fee === '€10.50')     return '#c0392b';
+  return '#f39c12';
+}
+
+PR_ZONES.forEach(pr => {
+  const col   = prCircleColor(pr);
+  const cls   = feeClass(pr);
+  const badge = pr.status === 'closed' ? '🚫' : pr.fee === 'Gratuit' ? '✅' : pr.fee === '€10.50' ? '💰💰' : '💰';
+
+  // Zone circle
+  const circle = L.circle([pr.lat, pr.lon], {
+    radius: pr.radius,
+    color: col, weight: 2, opacity: .7,
+    fillColor: col, fillOpacity: .12,
+    dashArray: pr.status === 'closed' ? '6,4' : null,
+  });
+
+  // Marker with PR code badge
+  const marker = L.marker([pr.lat, pr.lon], {
+    icon: L.divIcon({
+      className: '',
+      html: `<div style="background:${col};color:#fff;font-weight:800;font-size:10px;
+             padding:2px 7px;border-radius:8px;border:1.5px solid #fff;
+             box-shadow:0 1px 5px rgba(0,0,0,.5);white-space:nowrap;opacity:.95">${pr.code}</div>`,
+      iconAnchor: [0, 10],
+    }),
+    zIndexOffset: 500,
+  });
+
+  const statusLabel = pr.status === 'closed' ? '<br><b style="color:#e74c3c">⛔ FERMÉ EN 2026</b>'
+                    : pr.status === 'partial' ? '<br><b style="color:#f39c12">⚠ Partiellement ouvert</b>' : '';
+  const popupHtml = `
+    <div class="pr-popup">
+      <div class="pr-popup-code">${pr.code} ${badge}</div>
+      <div class="pr-popup-name">${pr.name}</div>
+      <span class="pr-popup-fee ${cls}">${pr.fee}</span>${statusLabel}
+      <div class="pr-popup-desc">${pr.desc}</div>
+      <a class="pr-popup-link" href="https://simplifica.madeira.gov.pt/services/78-82-259" target="_blank">→ Réserver sur Simplifica</a>
+    </div>`;
+
+  circle.bindPopup(popupHtml);
+  marker.bindPopup(popupHtml);
+
+  prLayerGroup.addLayer(circle);
+  prLayerGroup.addLayer(marker);
+});
+
+function togglePR() {
+  prVisible = !prVisible;
+  const btn = document.getElementById('pr-toggle');
+  if (prVisible) {
+    prLayerGroup.addTo(map);
+    btn.classList.add('active');
+    btn.textContent = '🔓 Zones PR payantes (actif)';
+  } else {
+    map.removeLayer(prLayerGroup);
+    btn.classList.remove('active');
+    btn.textContent = '🔒 Zones PR payantes';
+  }
+}
+
+// ── Legend (stages) ────────────────────────────────────────────────────────
 const legendEl = document.getElementById('legend');
 let activeStage = 0;
 
 function setActive(idx) {
   activeStage = idx;
-  document.querySelectorAll('.legend-item').forEach((el, i) => el.classList.toggle('active', i === idx));
-  document.querySelectorAll('.tab-btn').forEach((el, i)  => el.classList.toggle('active', i === idx));
-  document.querySelectorAll('.tab-content').forEach((el, i) => el.classList.toggle('active', i === idx));
-  polylines.forEach((p, i) => p.setStyle({ weight: i === idx ? 6 : 4, opacity: i === idx ? 1 : 0.55 }));
-  if (polylines[idx] && polylines[idx].getBounds().isValid()) map.fitBounds(polylines[idx].getBounds(), {padding:[20,20]});
+  document.querySelectorAll('.legend-item').forEach((el,i) => el.classList.toggle('active', i===idx));
+  document.querySelectorAll('.tab-btn').forEach((el,i)    => el.classList.toggle('active', i===idx));
+  document.querySelectorAll('.tab-content').forEach((el,i) => el.classList.toggle('active', i===idx));
+  polylines.forEach((p,i) => p.setStyle({ weight: i===idx ? 6 : 4, opacity: i===idx ? 1 : 0.55 }));
+  if (polylines[idx]?.getBounds().isValid()) map.fitBounds(polylines[idx].getBounds(), {padding:[20,20]});
 }
 
 STAGES.forEach((s, i) => {
   const item = document.createElement('div');
-  item.className = 'legend-item' + (i === 0 ? ' active' : '');
+  item.className = 'legend-item' + (i===0 ? ' active' : '');
   item.innerHTML = `<div class="legend-dot" style="background:${s.color}"></div>
     <div><div class="legend-label">${s.label}</div>
     <div class="legend-dist">${s.stats.dist_km} km · +${s.stats.gain_m}m</div></div>`;
@@ -331,23 +523,18 @@ const tabsEl = document.getElementById('panel-tabs');
 const bodyEl = document.getElementById('panel-body');
 bodyEl.style.cssText = 'flex:1;display:flex;flex-direction:column;overflow:hidden';
 
-const charts = [];
-
+// Stage tabs
 STAGES.forEach((s, i) => {
-  // Tab button
   const btn = document.createElement('button');
-  btn.className = 'tab-btn' + (i === 0 ? ' active' : '');
+  btn.className = 'tab-btn' + (i===0 ? ' active' : '');
   btn.textContent = s.label;
   btn.style.setProperty('--stage-color', s.color);
   btn.addEventListener('click', () => setActive(i));
   tabsEl.appendChild(btn);
 
-  // Tab content
   const content = document.createElement('div');
-  content.className = 'tab-content' + (i === 0 ? ' active' : '');
+  content.className = 'tab-content' + (i===0 ? ' active' : '');
   content.style.flexDirection = 'column';
-
-  // Stats
   const st = s.stats;
   content.innerHTML = `
     <p class="section-title">Statistiques</p>
@@ -365,14 +552,13 @@ STAGES.forEach((s, i) => {
   `;
   bodyEl.appendChild(content);
 
-  // Waypoints list
   const wptList = content.querySelector(`#wpts-${i}`);
   const wptFiltered = s.waypoints.filter(w => w.name);
-  if (wptFiltered.length === 0) {
+  if (!wptFiltered.length) {
     wptList.innerHTML = '<li style="color:#666;font-size:.8rem;padding:6px 0">Aucun point nommé</li>';
   }
   wptFiltered.forEach(w => {
-    const isBegin = w.type === 'Begin', isEnd = w.type === 'End';
+    const isBegin = w.type==='Begin', isEnd = w.type==='End';
     const emoji   = isBegin ? '🏁' : isEnd ? '🏆' : w.type.toLowerCase().includes('fork') ? '⚠' : '📍';
     const bg      = isBegin ? '#27ae60' : isEnd ? '#c0392b' : s.color;
     const li = document.createElement('li');
@@ -382,54 +568,95 @@ STAGES.forEach((s, i) => {
         <div class="wpt-name">${w.name}</div>
         <div class="wpt-type">${w.type.replace(/_/g,' ')}</div>
       </div>`;
-    li.style.cursor = 'pointer';
     li.addEventListener('click', () => map.setView([w.lat, w.lon], 15));
     wptList.appendChild(li);
   });
 });
 
-// ── Elevation charts (deferred to avoid layout issue) ─────────────────────
+// PR tab
+const prBtn = document.createElement('button');
+prBtn.className = 'tab-btn';
+prBtn.textContent = '💰 PR';
+prBtn.style.setProperty('--stage-color', '#f1c40f');
+tabsEl.appendChild(prBtn);
+
+const prContent = document.createElement('div');
+prContent.className = 'tab-content';
+prContent.style.flexDirection = 'column';
+prContent.innerHTML = `
+  <p class="section-title">Sentiers PR payants 2026</p>
+  <div style="font-size:.75rem;color:#aaa;margin-bottom:10px;line-height:1.5">
+    Réservation obligatoire sur
+    <a href="https://simplifica.madeira.gov.pt/services/78-82-259" target="_blank" style="color:#3498db">Simplifica</a>.
+    Cliquez sur un PR pour le localiser sur la carte.
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:.72rem">
+    <span style="background:#c0392b;color:#fff;padding:2px 7px;border-radius:8px;font-weight:700">€10.50 PR1</span>
+    <span style="background:#e67e22;color:#fff;padding:2px 7px;border-radius:8px;font-weight:700">€4.50 standard</span>
+    <span style="background:#27ae60;color:#fff;padding:2px 7px;border-radius:8px;font-weight:700">Gratuit</span>
+    <span style="background:#555;color:#aaa;padding:2px 7px;border-radius:8px;font-weight:700">Fermé</span>
+  </div>
+  <ul class="pr-list" id="pr-list"></ul>
+`;
+bodyEl.appendChild(prContent);
+
+prBtn.addEventListener('click', () => {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  prBtn.classList.add('active');
+  prContent.classList.add('active');
+  document.querySelectorAll('.legend-item').forEach(el => el.classList.remove('active'));
+  polylines.forEach(p => p.setStyle({ weight: 4, opacity: 0.65 }));
+  // Auto-enable PR zones
+  if (!prVisible) togglePR();
+});
+
+const prList = document.getElementById('pr-list');
+PR_ZONES.forEach(pr => {
+  const cls = feeClass(pr);
+  const badgeClass = cls === 'exp' ? 'expensive' : cls === 'free' ? 'free' : cls === 'closed' ? 'closed' : 'standard';
+  const feeLabel = pr.status === 'closed' ? '⛔ Fermé' : pr.fee;
+  const li = document.createElement('li');
+  li.className = 'pr-item';
+  li.innerHTML = `
+    <span class="pr-badge ${badgeClass}">${feeLabel}</span>
+    <div class="pr-info">
+      <div class="pr-code">${pr.code} – ${pr.name.length > 28 ? pr.name.slice(0,26)+'…' : pr.name}</div>
+      <div class="pr-name">${pr.desc.slice(0, 55)}${pr.desc.length>55?'…':''}</div>
+      ${pr.status === 'closed' ? '<div class="pr-status-closed">⛔ FERMÉ EN 2026</div>' : ''}
+    </div>`;
+  li.addEventListener('click', () => {
+    map.setView([pr.lat, pr.lon], 14);
+    if (!prVisible) togglePR();
+  });
+  prList.appendChild(li);
+});
+
+// ── Elevation charts ───────────────────────────────────────────────────────
 setTimeout(() => {
   STAGES.forEach((s, i) => {
     const canvas = document.getElementById(`chart-${i}`);
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    charts.push(new Chart(ctx, {
+    new Chart(canvas.getContext('2d'), {
       type: 'line',
       data: {
         labels: s.elevKm,
         datasets: [{
-          data: s.elevPts,
-          borderColor: s.color,
-          backgroundColor: s.color + '33',
-          borderWidth: 1.5,
-          fill: true,
-          pointRadius: 0,
-          tension: 0.3,
+          data: s.elevPts, borderColor: s.color, backgroundColor: s.color + '33',
+          borderWidth: 1.5, fill: true, pointRadius: 0, tension: 0.3,
         }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: false,
+        responsive: true, maintainAspectRatio: false, animation: false,
         plugins: { legend: { display: false }, tooltip: {
-          callbacks: {
-            title: ctx => ctx[0].label + ' km',
-            label: ctx => ctx.parsed.y + ' m',
-          }
+          callbacks: { title: c => c[0].label + ' km', label: c => c.parsed.y + ' m' }
         }},
         scales: {
-          x: {
-            ticks: { color: '#888', maxTicksLimit: 6, callback: v => s.elevKm[v] + ' km' },
-            grid: { color: 'rgba(255,255,255,.05)' },
-          },
-          y: {
-            ticks: { color: '#888', callback: v => v + ' m' },
-            grid: { color: 'rgba(255,255,255,.08)' },
-          }
+          x: { ticks: { color:'#888', maxTicksLimit:6, callback: v => s.elevKm[v]+' km' }, grid: { color:'rgba(255,255,255,.05)' } },
+          y: { ticks: { color:'#888', callback: v => v+' m' }, grid: { color:'rgba(255,255,255,.08)' } }
         }
       }
-    }));
+    });
   });
 }, 100);
 </script>
@@ -444,13 +671,19 @@ def main():
         print("Aucun fichier GPX trouvé.")
         return
 
-    html = HTML_TEMPLATE.replace('__STAGES_JSON__', json.dumps(data, ensure_ascii=False))
+    html = HTML_TEMPLATE \
+        .replace('__STAGES_JSON__',   json.dumps(data,     ensure_ascii=False)) \
+        .replace('__PR_ZONES_JSON__', json.dumps(PR_ZONES, ensure_ascii=False))
+
     out = base / 'MIUT2026_carte.html'
     out.write_text(html, encoding='utf-8')
     print(f"✅ Carte générée : {out}")
     for s in data:
         st = s['stats']
-        print(f"  {s['label']:12s} {st['dist_km']} km  +{st['gain_m']}m  -{st['loss_m']}m  alt {st['min_ele']}–{st['max_ele']}m")
+        print(f"  {s['label']:12s} {st['dist_km']} km  +{st['gain_m']}m  -{st['loss_m']}m")
+    print(f"\n  {len(PR_ZONES)} zones PR chargées ({sum(1 for p in PR_ZONES if p['fee']!='Gratuit' and p['status']!='closed')} payantes, "
+          f"{sum(1 for p in PR_ZONES if p['status']=='closed')} fermées, "
+          f"{sum(1 for p in PR_ZONES if p['fee']=='Gratuit')} gratuites)")
 
 if __name__ == '__main__':
     main()
