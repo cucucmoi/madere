@@ -50,6 +50,10 @@ PR_ZONES = [
     {'code':'PR6.2', 'name':'Levada do Alecrim',             'fee':'€4.50','status':'open',
      'lat':32.7680,'lon':-17.0820,'radius':1500,
      'desc':'Rabacal → Nascente Levada do Alecrim.'},
+    # ── PR5 Vereda das Funduras (FERMÉ – glissement de terrain 2026) ──
+    {'code':'PR5',   'name':'Vereda das Funduras',           'fee':'€4.50','status':'closed',
+     'lat':32.7470,'lon':-16.8000,'radius':3000,
+     'desc':'Portela → Maroços. FERMÉ en 2026 suite à glissement de terrain.'},
     # ── PR8 Ponta de São Lourenço ──
     {'code':'PR8',   'name':'Vereda da Ponta de São Lourenço','fee':'€4.50','status':'open',
      'lat':32.7364,'lon':-16.7197,'radius':2500,
@@ -70,10 +74,10 @@ PR_ZONES = [
     {'code':'PR14',  'name':'Levada dos Cedros',             'fee':'€4.50','status':'open',
      'lat':32.7820,'lon':-17.1050,'radius':2000,
      'desc':'Fanal → Levada dos Cedros. Forêt laurisilva UNESCO.'},
-    # ── PR15 Ribeira da Janela ──
-    {'code':'PR15',  'name':'Vereda da Ribeira da Janela',   'fee':'€4.50','status':'open',
+    # ── PR15/PR27 Ribeira da Janela (numérotation PR27 en 2026) ──
+    {'code':'PR27',  'name':'Vereda da Ribeira da Janela',   'fee':'€4.50','status':'open',
      'lat':32.8210,'lon':-17.1320,'radius':1500,
-     'desc':'Ribeira da Janela. Descente avec vues mer.'},
+     'desc':'Ribeira da Janela. Descente avec vues mer. (ex-PR15, numéroté PR27 en 2026)'},
     # ── PR16 Fajã do Rodrigues ──
     {'code':'PR16',  'name':'Levada Fajã do Rodrigues',      'fee':'€4.50','status':'open',
      'lat':32.8040,'lon':-17.0820,'radius':2000,
