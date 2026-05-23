@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carte des PR – Madère 2026</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #1a1a2e; color: #eee;
+       height: 100vh; display: flex; flex-direction: column; }
+
+#header {
+  background: linear-gradient(135deg, #16213e, #0f3460);
+  padding: 10px 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,.5); flex-shrink: 0;
+}
+#header h1 { font-size: 1.1rem; letter-spacing: 1.5px; color: #e2b96f; white-space: nowrap; }
+#header h1 small { font-size: .68rem; color: #aaa; display: block; }
+
+.leg-row { display: flex; align-items: center; gap: 6px; font-size: .75rem; }
+.swatch { width: 28px; height: 5px; border-radius: 3px; flex-shrink: 0; }
+.swatch.dashed { background: repeating-linear-gradient(90deg,currentColor 0,currentColor 6px,transparent 6px,transparent 10px); }
+
+#note { font-size: .68rem; color: #aaa; border-left: 2px solid #444; padding-left: 8px; max-width: 320px; }
+
+#main { display: flex; flex: 1; overflow: hidden; }
+#map  { flex: 1; }
+
+#sidebar {
+  width: 270px; flex-shrink: 0; background: #16213e;
+  border-left: 1px solid #2a3a5e; display: flex; flex-direction: column; overflow: hidden;
+}
+#sidebar h2 { font-size: .78rem; font-weight: 700; letter-spacing: 1px;
+              color: #aaa; padding: 10px 12px; border-bottom: 1px solid #2a3a5e; }
+#pr-list { flex: 1; overflow-y: auto; }
+.pr-entry {
+  display: flex; align-items: center; gap: 8px; padding: 6px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.05); cursor: pointer; transition: .15s;
+}
+.pr-entry:hover { background: rgba(255,255,255,.06); }
+.pr-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.pr-code { font-size: .72rem; font-weight: 800; color: #ddd; min-width: 40px; }
+.pr-name { font-size: .68rem; color: #bbb; flex: 1; }
+.pr-fee  { font-size: .65rem; font-weight: 700; padding: 1px 5px; border-radius: 6px; flex-shrink: 0; }
+.fee-exp    { background: #c0392b; color: #fff; }
+.fee-std    { background: #e67e22; color: #fff; }
+.fee-free   { background: #27ae60; color: #fff; }
+.fee-closed { background: #555; color: #aaa; }
+
+#sidebar ::-webkit-scrollbar { width: 4px; }
+#sidebar ::-webkit-scrollbar-thumb { background: #2a3a5e; border-radius: 3px; }
+
+.pr-popup { min-width: 200px; font-family: 'Segoe UI', sans-serif; }
+.pr-popup h3 { font-size: .95rem; margin-bottom: 4px; }
+.pr-popup .badge { display: inline-block; padding: 2px 8px; border-radius: 8px;
+                   font-weight: 700; font-size: .8rem; margin-bottom: 5px; }
+.pr-popup .meta { font-size: .78rem; color: #555; margin: 3px 0; }
+.pr-popup a { font-size: .73rem; color: #2980b9; display: block; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <h1>Sentiers PR – Madère <small>Percursos Pedestres Classificados 2026</small></h1>
+  <div style="display:flex;gap:14px;flex-wrap:wrap">
+    <div class="leg-row"><div class="swatch" style="background:#c0392b;height:5px;width:28px;border-radius:3px"></div> €10.50 (PR1 réseau)</div>
+    <div class="leg-row"><div class="swatch" style="background:#e67e22;height:5px;width:28px;border-radius:3px"></div> €4.50</div>
+    <div class="leg-row"><div class="swatch" style="background:#27ae60;height:5px;width:28px;border-radius:3px"></div> Gratuit</div>
+    <div class="leg-row"><div class="swatch" style="background:#777;height:5px;width:28px;border-radius:3px"></div> Fermé</div>
+  </div>
+  <div id="note">Tracés approximatifs (début→fin). Cliquez sur un PR pour ouvrir la fiche détaillée.</div>
+</div>
+
+<div id="main">
+  <div id="map"></div>
+  <div id="sidebar">
+    <h2>LISTE DES PR (2026)</h2>
+    <div id="pr-list"></div>
+  </div>
+</div>
+
+<script>
+// ── Données PR (coordonnées géographiques + métadonnées) ─────────────────
+// start/end = [lat, lon] des extrémités connues du sentier
+// via = points intermédiaires facultatifs
+const PR_DATA = [
+  // ── PR1 réseau – Pico Ruivo ──────────────────────────────────────────
+  {
+    code:'PR1', name:'Vereda do Areeiro',
+    fee:'€10.50', status:'open', dist:'7 km', dur:'3h30',
+    start:[32.7349,-16.9287], end:[32.7602,-16.9416],
+    via:[[32.7440,-16.9350],[32.7530,-16.9400]],
+    desc:'Pico do Areeiro (1818m) → Pico Ruivo (1862m). Le plus beau sentier de Madère.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr1',
+  },
+  {
+    code:'PR1.1', name:'Vereda da Ilha',
+    fee:'€10.50', status:'open', dist:'8.2 km', dur:'3h',
+    start:[32.7602,-16.9416], end:[32.8060,-16.9450],
+    desc:'Casa de Abrigo do Pico Ruivo → Ilha. Descente nord vers la côte.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr1',
+  },
+  {
+    code:'PR1.2', name:'Vereda do Pico Ruivo',
+    fee:'€10.50', status:'open', dist:'2.5 km', dur:'1h',
+    start:[32.7577,-16.9308], end:[32.7602,-16.9416],
+    desc:'Achada do Teixeira → Pico Ruivo. Accès court au sommet.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr1',
+  },
+  {
+    code:'PR1.3', name:'Vereda da Encumeada',
+    fee:'€10.50', status:'closed', dist:'12 km', dur:'5h',
+    start:[32.7602,-16.9416], end:[32.7472,-17.0094],
+    via:[[32.7540,-16.9650],[32.7500,-16.9900]],
+    desc:'Pico Ruivo → Encumeada. FERMÉ 2026.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr1',
+  },
+  // ── PR2 ──────────────────────────────────────────────────────────────
+  {
+    code:'PR2', name:'Vereda do Urzal',
+    fee:'€4.50', status:'open', dist:'10.6 km', dur:'4h30',
+    start:[32.7131,-16.9714], end:[32.8088,-16.9231],
+    via:[[32.7400,-16.9580],[32.7700,-16.9380]],
+    desc:'Curral das Freiras → Boaventura. Traversée nord-sud spectaculaire.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr2',
+  },
+  // ── PR3 (Porto Santo – hors carte Madère) ────────────────────────────
+  // Skipped – Porto Santo island
+  // ── PR4 ──────────────────────────────────────────────────────────────
+  {
+    code:'PR4', name:'Levada do Barreiro',
+    fee:'€4.50', status:'partial', dist:'5.2 km', dur:'2h10',
+    start:[32.7485,-17.0362], end:[32.7620,-17.0443],
+    desc:'Poço da Neve → Casa do Barreiro (Paul da Serra). Partiellement ouvert.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr4',
+  },
+  // ── PR5 ──────────────────────────────────────────────────────────────
+  {
+    code:'PR5', name:'Vereda das Funduras',
+    fee:'€4.50', status:'open', dist:'8.7 km', dur:'3h30',
+    start:[32.7493,-16.8119], end:[32.7363,-16.7958],
+    desc:'Portela → Maroços. Forêt laurisilva, vue sur Penha d\'Águia.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr5',
+  },
+  // ── PR6 réseau – Rabacal ─────────────────────────────────────────────
+  {
+    code:'PR6', name:'Levada das 25 Fontes',
+    fee:'€4.50', status:'open', dist:'11 km', dur:'3h',
+    start:[32.7616,-17.0787], end:[32.7525,-17.0900],
+    desc:'Rabacal → 25 Fontes. Cascades et laurisilva UNESCO.',
+    url:'https://madeira-travel.madere-leguide.com/levada-25-fontes',
+  },
+  {
+    code:'PR6.1', name:'Levada do Risco',
+    fee:'€4.50', status:'open', dist:'3 km', dur:'1h',
+    start:[32.7616,-17.0787], end:[32.7690,-17.0890],
+    desc:'Rabacal → Cascata do Risco.',
+    url:'https://madeira-travel.madere-leguide.com/levada-25-fontes#risco',
+  },
+  {
+    code:'PR6.2', name:'Levada do Alecrim',
+    fee:'€4.50', status:'open', dist:'2.5 km', dur:'1h',
+    start:[32.7616,-17.0787], end:[32.7550,-17.0730],
+    desc:'Rabacal → Nascente Levada do Alecrim.',
+    url:'https://madeira-travel.madere-leguide.com/levada-25-fontes#alecrim',
+  },
+  // ── PR7 ──────────────────────────────────────────────────────────────
+  {
+    code:'PR7', name:'Levada do Moinho',
+    fee:'€4.50', status:'closed', dist:'7 km', dur:'2h30',
+    start:[32.8050,-17.0200], end:[32.8150,-17.0550],
+    desc:'São Vicente. FERMÉ 2026.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr7',
+  },
+  // ── PR8 ──────────────────────────────────────────────────────────────
+  {
+    code:'PR8', name:'Vereda da Ponta de São Lourenço',
+    fee:'€4.50', status:'open', dist:'7 km', dur:'3h',
+    start:[32.7380,-16.7320], end:[32.7432,-16.7011],
+    via:[[32.7430,-16.7200],[32.7440,-16.7100]],
+    desc:'Caniçal → Ponta de São Lourenço. Péninsule volcanique est.',
+    url:'https://madeira-travel.madere-leguide.com/pr8-ponta-de-sao-lourenco',
+  },
+  // ── PR9 ──────────────────────────────────────────────────────────────
+  {
+    code:'PR9', name:'Levada do Caldeirão Verde',
+    fee:'€4.50', status:'closed', dist:'17.4 km', dur:'6h',
+    start:[32.7565,-16.9103], end:[32.7670,-16.8967],
+    desc:'Queimadas → Caldeirão Verde. FERMÉ 2026.',
+    url:'https://madeira-travel.madere-leguide.com/pr9-levada-caldeirao-verde',
+  },
+  // ── PR10 ─────────────────────────────────────────────────────────────
+  {
+    code:'PR10', name:'Levada do Furado',
+    fee:'€4.50', status:'closed', dist:'14 km', dur:'5h',
+    start:[32.7370,-16.8810], end:[32.7703,-16.8478],
+    desc:'Ribeiro Frio → Porto da Cruz. FERMÉ 2026.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr10',
+  },
+  // ── PR11 ─────────────────────────────────────────────────────────────
+  {
+    code:'PR11', name:'Vereda dos Balcões',
+    fee:'Gratuit', status:'open', dist:'3 km', dur:'1h',
+    start:[32.7370,-16.8810], end:[32.7330,-16.8760],
+    desc:'Ribeiro Frio. Circuit court avec vue panoramique. GRATUIT.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr11',
+  },
+  // ── PR12 ─────────────────────────────────────────────────────────────
+  {
+    code:'PR12', name:'Caminho Real da Encumeada',
+    fee:'€4.50', status:'partial', dist:'8 km', dur:'3h',
+    start:[32.7315,-17.0098], end:[32.7472,-17.0094],
+    desc:'Serra de Água → Encumeada. Partiellement ouvert.',
+    url:'https://www.madere-leguide.com/pr12-caminho-real-da-encumeada',
+  },
+  // ── PR13 ─────────────────────────────────────────────────────────────
+  {
+    code:'PR13', name:'Vereda do Fanal',
+    fee:'Gratuit', status:'open', dist:'2.8 km', dur:'1h',
+    start:[32.7889,-17.0961], end:[32.7840,-17.1010],
+    desc:'Fanal – forêt de laurisilva. Circuit. GRATUIT.',
+    url:'https://madeira-travel.madere-leguide.com/pr13-vereda-fanal',
+  },
+  // ── PR14 ─────────────────────────────────────────────────────────────
+  {
+    code:'PR14', name:'Levada dos Cedros',
+    fee:'€4.50', status:'open', dist:'6 km', dur:'2h',
+    start:[32.7820,-17.1050], end:[32.8050,-17.1200],
+    desc:'Fanal → Levada dos Cedros. Forêt laurisilva UNESCO.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr14',
+  },
+  // ── PR15/PR27 Ribeira da Janela ───────────────────────────────────────
+  {
+    code:'PR27', name:'Vereda da Ribeira da Janela',
+    fee:'€4.50', status:'open', dist:'2.7 km', dur:'1h30',
+    start:[32.8210,-17.1320], end:[32.8160,-17.1120],
+    desc:'Ribeira da Janela. Descente côte nord-ouest. (ex-PR15)',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr15',
+  },
+  // ── PR16 ─────────────────────────────────────────────────────────────
+  {
+    code:'PR16', name:'Levada Fajã do Rodrigues',
+    fee:'€4.50', status:'open', dist:'5 km', dur:'2h',
+    start:[32.8040,-17.0820], end:[32.8200,-17.0650],
+    desc:'São Vicente. Levada avec tunnels.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr16',
+  },
+  // ── PR17 ─────────────────────────────────────────────────────────────
+  {
+    code:'PR17', name:'Caminho do Pináculo e Folhadal',
+    fee:'€4.50', status:'open', dist:'11 km', dur:'4h',
+    start:[32.7472,-17.0094], end:[32.7660,-17.0450],
+    via:[[32.7560,-17.0270]],
+    desc:'Encumeada → Pináculo. Crêtes spectaculaires.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr17',
+  },
+  // ── PR18 ─────────────────────────────────────────────────────────────
+  {
+    code:'PR18', name:'Levada do Rei',
+    fee:'€4.50', status:'open', dist:'7 km', dur:'2h30',
+    start:[32.8083,-16.9483], end:[32.8200,-16.9280],
+    desc:'São Jorge. Levada dans la forêt du nord.',
+    url:'https://madeira-travel.madere-leguide.com/levada-do-rei',
+  },
+  // ── PR19 ─────────────────────────────────────────────────────────────
+  {
+    code:'PR19', name:'Vereda Real do Paul do Mar',
+    fee:'€4.50', status:'open', dist:'6 km', dur:'2h30',
+    start:[32.7265,-17.2242], end:[32.7354,-17.2025],
+    desc:'Paul do Mar → Prazeres. Côte sud-ouest escarpée.',
+    url:'https://madeira-travel.madere-leguide.com/pr19-caminho-real-paul-do-mar',
+  },
+  // ── PR20 ─────────────────────────────────────────────────────────────
+  {
+    code:'PR20', name:'Vereda do Jardim do Mar',
+    fee:'€4.50', status:'closed', dist:'5 km', dur:'2h',
+    start:[32.7270,-17.2360], end:[32.7200,-17.2100],
+    desc:'Jardim do Mar. FERMÉ 2026.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr20',
+  },
+  // ── PR21 ─────────────────────────────────────────────────────────────
+  {
+    code:'PR21', name:'Caminho do Norte',
+    fee:'€4.50', status:'open', dist:'3.2 km', dur:'1h30',
+    start:[32.7800,-17.0750], end:[32.7650,-17.0530],
+    desc:'Traversée historique nord – sentier muletier dallé.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr21',
+  },
+  // ── PR22 ─────────────────────────────────────────────────────────────
+  {
+    code:'PR22', name:'Vereda do Chão dos Louros',
+    fee:'€4.50', status:'open', dist:'1.9 km', dur:'45min',
+    start:[32.7630,-16.9540], end:[32.7560,-16.9460],
+    desc:'Forêt de laurisilva – zone centrale protégée.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr22',
+  },
+  // ── PR23 ─────────────────────────────────────────────────────────────
+  {
+    code:'PR23', name:'Levada da Azenha',
+    fee:'Gratuit', status:'open', dist:'2.5 km', dur:'1h',
+    start:[32.7100,-17.0600], end:[32.7200,-17.0700],
+    desc:'Levada da Azenha. GRATUIT.',
+    url:'https://madeira-travel.madere-leguide.com/pr-hikes#pr23',
+  },
+];
+
+// ── Couleurs ──────────────────────────────────────────────────────────────
+function prColor(pr) {
+  if (pr.status === 'closed')  return '#888';
+  if (pr.fee === 'Gratuit')    return '#27ae60';
+  if (pr.fee === '€10.50')     return '#c0392b';
+  return '#e67e22';
+}
+function feeBadgeClass(pr) {
+  if (pr.status === 'closed')  return 'fee-closed';
+  if (pr.fee === 'Gratuit')    return 'fee-free';
+  if (pr.fee === '€10.50')     return 'fee-exp';
+  return 'fee-std';
+}
+
+// ── Carte ─────────────────────────────────────────────────────────────────
+const map = L.map('map').setView([32.760, -17.000], 11);
+L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenTopoMap | IFCN Madeira', maxZoom: 17
+}).addTo(map);
+
+// ── Tracés + labels ───────────────────────────────────────────────────────
+const layers = [];
+
+PR_DATA.forEach((pr, idx) => {
+  const col = prColor(pr);
+  const pts  = [pr.start, ...(pr.via || []), pr.end];
+
+  // Halo blanc
+  const halo = L.polyline(pts, {
+    color: '#fff', weight: 8, opacity: 0.45, smoothFactor: 1,
+    dashArray: pr.status === 'closed' ? '4,6' : null,
+  });
+
+  // Ligne colorée
+  const line = L.polyline(pts, {
+    color: col, weight: 4, opacity: 0.9, smoothFactor: 1,
+    dashArray: pr.status === 'closed' ? '6,5' : pr.status === 'partial' ? '10,4' : null,
+  });
+
+  const feeLabel = pr.status === 'closed' ? '⛔ Fermé'
+                 : pr.status === 'partial' ? `⚠ ${pr.fee} (partiel)` : pr.fee;
+  const badgeCls = feeBadgeClass(pr);
+  const popupHtml = `
+    <div class="pr-popup">
+      <h3>${pr.code} – ${pr.name}</h3>
+      <span class="badge ${badgeCls}">${feeLabel}</span>
+      <div class="meta">📏 ${pr.dist} &nbsp; ⏱ ${pr.dur}</div>
+      <div class="meta" style="color:#333">${pr.desc}</div>
+      <a href="${pr.url}" target="_blank">→ Fiche détaillée madere-leguide.com</a>
+    </div>`;
+
+  line.bindPopup(popupHtml);
+  halo.bindPopup(popupHtml);
+
+  // Label au milieu du tracé
+  const mid = pts[Math.floor(pts.length / 2)];
+  const label = L.marker(mid, {
+    icon: L.divIcon({
+      className: '',
+      html: `<div style="background:${col};color:#fff;font-weight:800;font-size:9px;
+             padding:1px 5px;border-radius:6px;border:1px solid #fff;
+             box-shadow:0 1px 4px rgba(0,0,0,.5);white-space:nowrap;pointer-events:none">${pr.code}</div>`,
+      iconAnchor: [0, 8],
+    }),
+    zIndexOffset: 400, interactive: false,
+  });
+
+  // Marqueurs départ (cercle) / arrivée (carré)
+  const startM = L.circleMarker(pr.start, {
+    radius: 4, color: col, fillColor: '#fff', fillOpacity: 1, weight: 2,
+  }).bindPopup(popupHtml);
+  const endM = L.circleMarker(pr.end, {
+    radius: 4, color: col, fillColor: col, fillOpacity: 1, weight: 2,
+  }).bindPopup(popupHtml);
+
+  [halo, line, label, startM, endM].forEach(l => l.addTo(map));
+  layers.push({ pr, line, halo, label, startM, endM });
+
+  // Sidebar entry
+  const listEl = document.getElementById('pr-list');
+  const entry = document.createElement('div');
+  entry.className = 'pr-entry';
+  entry.innerHTML = `
+    <div class="pr-dot" style="background:${col}"></div>
+    <span class="pr-code">${pr.code}</span>
+    <span class="pr-name">${pr.name}</span>
+    <span class="pr-fee ${badgeCls}">${pr.status==='closed'?'⛔':pr.fee}</span>`;
+  entry.addEventListener('click', () => {
+    const bounds = line.getBounds();
+    if (bounds.isValid()) map.fitBounds(bounds, {padding: [40, 40]});
+    line.openPopup();
+  });
+  listEl.appendChild(entry);
+});
+
+// ── Fit bounds Madère ─────────────────────────────────────────────────────
+map.fitBounds([[32.63,-17.27],[32.88,-16.63]]);
+</script>
+</body>
+</html>
