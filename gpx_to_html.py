@@ -50,10 +50,6 @@ PR_ZONES = [
     {'code':'PR6.2', 'name':'Levada do Alecrim',           'fee':'€4.50','status':'open',
      'lat':32.7680,'lon':-17.0820,'radius':1500,
      'desc':'Rabacal → Nascente Levada do Alecrim.'},
-    # ── PR7 Levada do Moinho (FERMÉ) ──
-    {'code':'PR7',   'name':'Levada do Moinho',            'fee':'€4.50','status':'closed',
-     'lat':32.8000,'lon':-17.0500,'radius':2000,
-     'desc':'FERMÉ en 2026.'},
     # ── PR8 Ponta de São Lourenço ──
     {'code':'PR8',   'name':'Vereda da Ponta de São Lourenço','fee':'€4.50','status':'open',
      'lat':32.7364,'lon':-16.7197,'radius':2500,
@@ -62,14 +58,6 @@ PR_ZONES = [
     {'code':'PR9',   'name':'Levada do Caldeirão Verde',   'fee':'€4.50','status':'closed',
      'lat':32.7583,'lon':-16.9208,'radius':2500,
      'desc':'Queimadas → Caldeirão Verde. FERMÉ en 2026.'},
-    # ── PR10 Levada do Furado (FERMÉ) ──
-    {'code':'PR10',  'name':'Levada do Furado',            'fee':'€4.50','status':'closed',
-     'lat':32.7472,'lon':-16.8889,'radius':3000,
-     'desc':'Ribeiro Frio → Porto da Cruz. FERMÉ en 2026.'},
-    # ── PR11 Balcões (GRATUIT) ──
-    {'code':'PR11',  'name':'Vereda dos Balcões',          'fee':'Gratuit','status':'open',
-     'lat':32.7450,'lon':-16.8808,'radius':1200,
-     'desc':'Ribeiro Frio. GRATUIT – aucune réservation requise.'},
     # ── PR12 Encumeada ──
     {'code':'PR12',  'name':'Caminho Real da Encumeada',   'fee':'€4.50','status':'partial',
      'lat':32.7472,'lon':-17.0094,'radius':2500,
@@ -94,14 +82,6 @@ PR_ZONES = [
     {'code':'PR17',  'name':'Caminho do Pináculo e Folhadal','fee':'€4.50','status':'open',
      'lat':32.7690,'lon':-17.0240,'radius':2500,
      'desc':'Encumeada → Pináculo. Crêtes spectaculaires.'},
-    # ── PR18 Levada do Rei ──
-    {'code':'PR18',  'name':'Levada do Rei',               'fee':'€4.50','status':'open',
-     'lat':32.8083,'lon':-16.9483,'radius':2000,
-     'desc':'São Jorge. Levada dans la forêt.'},
-    # ── PR19 Vereda Real do Paul do Mar ──
-    {'code':'PR19',  'name':'Vereda Real do Paul do Mar',  'fee':'€4.50','status':'open',
-     'lat':32.7260,'lon':-17.2170,'radius':1500,
-     'desc':'Paul do Mar → Prazeres. Côte sud-ouest.'},
     # ── PR21 Caminho do Norte ──
     {'code':'PR21',  'name':'Caminho do Norte',            'fee':'€4.50','status':'open',
      'lat':32.7750,'lon':-17.0650,'radius':3000,
