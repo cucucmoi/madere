@@ -9,45 +9,45 @@ from pathlib import Path
 NS = {'gpx': 'http://www.topografix.com/GPX/1/1'}
 
 STAGES = [
-    {'file': 'J1MIUT2026.gpx',        'label': 'J1', 'color': '#e74c3c'},
-    {'file': 'J2MIUT2026.gpx',        'label': 'J2', 'color': '#e67e22'},
-    {'file': 'J3MIUT2026.gpx',        'label': 'J3', 'color': '#27ae60'},
+    {'file': 'J1MIUT2026.gpx',         'label': 'J1',          'color': '#e74c3c'},
+    {'file': 'J2MIUT2026.gpx',         'label': 'J2',          'color': '#e67e22'},
+    {'file': 'J3MIUT2026.gpx',         'label': 'J3',          'color': '#27ae60'},
     {'file': 'J4varianteMIUT2026.gpx', 'label': 'J4 Variante', 'color': '#8e44ad'},
 ]
 
-# Sentiers PR classifiés payants – source IFCN / Simplifica Madeira 2026
-# fee: '€10.50' | '€4.50' | 'Gratuit'
-# status: 'open' | 'partial' | 'closed'
+# Sentiers PR classifiés – source IFCN / Simplifica Madeira 2026
+# Le radius sert uniquement à délimiter quelle portion du tracé MIUT
+# appartient à ce PR (pas affiché comme cercle sur la carte).
 PR_ZONES = [
     # ── PR1 réseau – Pico Ruivo (€10.50 – 1 billet = PR1 + PR1.1 + PR1.2) ──
-    {'code':'PR1',   'name':'Vereda do Areeiro',          'fee':'€10.50','status':'open',
+    {'code':'PR1',   'name':'Vereda do Areeiro',             'fee':'€10.50','status':'open',
      'lat':32.7255,'lon':-16.9322,'radius':1800,
      'desc':'Pico do Areeiro → Pico Ruivo (1862 m). Billet inclut PR1.1 et PR1.2.'},
-    {'code':'PR1.1', 'name':'Vereda da Ilha',              'fee':'€10.50','status':'open',
+    {'code':'PR1.1', 'name':'Vereda da Ilha',                'fee':'€10.50','status':'open',
      'lat':32.7294,'lon':-16.9396,'radius':1500,
      'desc':'Pico Ruivo → Ilha (inclus dans billet PR1).'},
-    {'code':'PR1.2', 'name':'Vereda do Pico Ruivo',        'fee':'€10.50','status':'open',
+    {'code':'PR1.2', 'name':'Vereda do Pico Ruivo',          'fee':'€10.50','status':'open',
      'lat':32.7356,'lon':-16.9481,'radius':1500,
      'desc':'Achada do Teixeira → Pico Ruivo (inclus dans billet PR1).'},
-    {'code':'PR1.3', 'name':'Vereda da Encumeada',         'fee':'€10.50','status':'closed',
+    {'code':'PR1.3', 'name':'Vereda da Encumeada',           'fee':'€10.50','status':'closed',
      'lat':32.7390,'lon':-16.9750,'radius':2500,
      'desc':'Pico Ruivo → Encumeada. FERMÉ en 2026.'},
     # ── PR2 Urzal ──
-    {'code':'PR2',   'name':'Vereda do Urzal',             'fee':'€4.50','status':'open',
+    {'code':'PR2',   'name':'Vereda do Urzal',               'fee':'€4.50','status':'open',
      'lat':32.7422,'lon':-16.9374,'radius':4000,
      'desc':'Curral das Freiras → Boaventura.'},
     # ── PR4 Levada do Barreiro ──
-    {'code':'PR4',   'name':'Levada do Barreiro',          'fee':'€4.50','status':'partial',
+    {'code':'PR4',   'name':'Levada do Barreiro',            'fee':'€4.50','status':'partial',
      'lat':32.7650,'lon':-17.0450,'radius':2200,
      'desc':'Poço da Neve → Casa do Barreiro (Paul da Serra). Partiellement ouvert.'},
     # ── PR6 réseau – Rabacal ──
-    {'code':'PR6',   'name':'Levada das 25 Fontes',        'fee':'€4.50','status':'open',
+    {'code':'PR6',   'name':'Levada das 25 Fontes',          'fee':'€4.50','status':'open',
      'lat':32.7625,'lon':-17.0892,'radius':2000,
      'desc':'Rabacal → 25 Fontes. Laurisilva UNESCO.'},
-    {'code':'PR6.1', 'name':'Levada do Risco',             'fee':'€4.50','status':'open',
+    {'code':'PR6.1', 'name':'Levada do Risco',               'fee':'€4.50','status':'open',
      'lat':32.7730,'lon':-17.0870,'radius':1500,
      'desc':'Rabacal → Cascata do Risco.'},
-    {'code':'PR6.2', 'name':'Levada do Alecrim',           'fee':'€4.50','status':'open',
+    {'code':'PR6.2', 'name':'Levada do Alecrim',             'fee':'€4.50','status':'open',
      'lat':32.7680,'lon':-17.0820,'radius':1500,
      'desc':'Rabacal → Nascente Levada do Alecrim.'},
     # ── PR8 Ponta de São Lourenço ──
@@ -55,27 +55,27 @@ PR_ZONES = [
      'lat':32.7364,'lon':-16.7197,'radius':2500,
      'desc':'Caniçal → Ponta de São Lourenço. Péninsule volcanique est.'},
     # ── PR9 Caldeirão Verde (FERMÉ) ──
-    {'code':'PR9',   'name':'Levada do Caldeirão Verde',   'fee':'€4.50','status':'closed',
+    {'code':'PR9',   'name':'Levada do Caldeirão Verde',     'fee':'€4.50','status':'closed',
      'lat':32.7583,'lon':-16.9208,'radius':2500,
      'desc':'Queimadas → Caldeirão Verde. FERMÉ en 2026.'},
     # ── PR12 Encumeada ──
-    {'code':'PR12',  'name':'Caminho Real da Encumeada',   'fee':'€4.50','status':'partial',
+    {'code':'PR12',  'name':'Caminho Real da Encumeada',     'fee':'€4.50','status':'partial',
      'lat':32.7472,'lon':-17.0094,'radius':2500,
      'desc':'Serra de Água → Encumeada. Partiellement ouvert.'},
     # ── PR13 Fanal (GRATUIT) ──
-    {'code':'PR13',  'name':'Vereda do Fanal',             'fee':'Gratuit','status':'open',
+    {'code':'PR13',  'name':'Vereda do Fanal',               'fee':'Gratuit','status':'open',
      'lat':32.7900,'lon':-17.0950,'radius':1800,
      'desc':'Fanal – forêt de laurisilva. GRATUIT.'},
     # ── PR14 Levada dos Cedros ──
-    {'code':'PR14',  'name':'Levada dos Cedros',           'fee':'€4.50','status':'open',
+    {'code':'PR14',  'name':'Levada dos Cedros',             'fee':'€4.50','status':'open',
      'lat':32.7820,'lon':-17.1050,'radius':2000,
      'desc':'Fanal → Levada dos Cedros. Forêt laurisilva UNESCO.'},
     # ── PR15 Ribeira da Janela ──
-    {'code':'PR15',  'name':'Vereda da Ribeira da Janela', 'fee':'€4.50','status':'open',
+    {'code':'PR15',  'name':'Vereda da Ribeira da Janela',   'fee':'€4.50','status':'open',
      'lat':32.8210,'lon':-17.1320,'radius':1500,
      'desc':'Ribeira da Janela. Descente avec vues mer.'},
     # ── PR16 Fajã do Rodrigues ──
-    {'code':'PR16',  'name':'Levada Fajã do Rodrigues',    'fee':'€4.50','status':'open',
+    {'code':'PR16',  'name':'Levada Fajã do Rodrigues',      'fee':'€4.50','status':'open',
      'lat':32.8040,'lon':-17.0820,'radius':2000,
      'desc':'São Vicente. Tunnels levada.'},
     # ── PR17 Pináculo e Folhadal ──
@@ -83,14 +83,15 @@ PR_ZONES = [
      'lat':32.7690,'lon':-17.0240,'radius':2500,
      'desc':'Encumeada → Pináculo. Crêtes spectaculaires.'},
     # ── PR21 Caminho do Norte ──
-    {'code':'PR21',  'name':'Caminho do Norte',            'fee':'€4.50','status':'open',
+    {'code':'PR21',  'name':'Caminho do Norte',              'fee':'€4.50','status':'open',
      'lat':32.7750,'lon':-17.0650,'radius':3000,
      'desc':'Traversée nord de l\'île.'},
     # ── PR22 Vereda do Chão dos Louros ──
-    {'code':'PR22',  'name':'Vereda do Chão dos Louros',   'fee':'€4.50','status':'open',
+    {'code':'PR22',  'name':'Vereda do Chão dos Louros',     'fee':'€4.50','status':'open',
      'lat':32.7600,'lon':-16.9500,'radius':2000,
      'desc':'Forêt de laurisilva, zone centrale.'},
 ]
+
 
 def haversine(lat1, lon1, lat2, lon2):
     R = 6371000
@@ -99,6 +100,7 @@ def haversine(lat1, lon1, lat2, lon2):
     dl = math.radians(lon2 - lon1)
     a = math.sin(dp/2)**2 + math.cos(p1)*math.cos(p2)*math.sin(dl/2)**2
     return R * 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+
 
 def parse_gpx(filepath):
     tree = ET.parse(filepath)
@@ -128,6 +130,7 @@ def parse_gpx(filepath):
         waypoints.append({'lat': lat, 'lon': lon, 'name': wpt_name or '', 'type': wpt_type or ''})
     return name, points, waypoints
 
+
 def compute_stats(points):
     dist, gain, loss = 0.0, 0.0, 0.0
     cum = [0.0]
@@ -144,14 +147,62 @@ def compute_stats(points):
     max_e = max(p[2] for p in points) if points else 0
     return dist, gain, loss, min_e, max_e, cum
 
+
 def sample(lst, max_pts):
     if len(lst) <= max_pts:
         return lst
     step = len(lst) / max_pts
     return [lst[int(i * step)] for i in range(max_pts)] + [lst[-1]]
 
+
+def build_pr_segments(stage_full_coords):
+    """
+    For each PR zone, extract the actual MIUT track segments (polylines)
+    that fall within the zone radius. Returns a list of PR entries each
+    containing the real GPS coords of the crossing sections.
+    """
+    result = []
+    for pr in PR_ZONES:
+        pr_segs = []
+        for label, color, pts in stage_full_coords:
+            in_zone = [haversine(lat, lon, pr['lat'], pr['lon']) <= pr['radius']
+                       for lat, lon in pts]
+            i = 0
+            while i < len(pts):
+                if in_zone[i]:
+                    j = i
+                    while j < len(pts) and in_zone[j]:
+                        j += 1
+                    seg_coords = [[pts[k][0], pts[k][1]] for k in range(i, j)]
+                    if len(seg_coords) >= 2:
+                        pr_segs.append({'stage': label, 'color': color, 'coords': seg_coords})
+                    i = j
+                else:
+                    i += 1
+
+        if not pr_segs:
+            continue
+
+        # Centroid = midpoint of the longest segment (for zoom/label)
+        largest = max(pr_segs, key=lambda s: len(s['coords']))
+        mid = largest['coords'][len(largest['coords']) // 2]
+
+        result.append({
+            'code':     pr['code'],
+            'name':     pr['name'],
+            'fee':      pr['fee'],
+            'status':   pr['status'],
+            'desc':     pr['desc'],
+            'lat':      mid[0],
+            'lon':      mid[1],
+            'segments': pr_segs,
+        })
+    return result
+
+
 def build_stage_data(base_dir):
     data = []
+    full_coords = []   # (label, color, [(lat,lon), ...]) – full resolution for PR extraction
     for s in STAGES:
         path = base_dir / s['file']
         if not path.exists():
@@ -161,7 +212,9 @@ def build_stage_data(base_dir):
         dist, gain, loss, min_e, max_e, cum = compute_stats(points)
         coords = sample([(p[0], p[1]) for p in points], 1500)
         elev_pts = sample(points, 600)
-        elev_cum  = sample(cum, 600)
+        elev_cum = sample(cum, 600)
+        full_latlon = [(p[0], p[1]) for p in points]
+        full_coords.append((s['label'], s['color'], full_latlon))
         important_wpts = []
         for w in waypoints:
             t = w['type']
@@ -173,22 +226,23 @@ def build_stage_data(base_dir):
             elif 'fork' in t.lower() and nm:
                 important_wpts.append(w)
         data.append({
-            'label':    s['label'],
-            'name':     name,
-            'color':    s['color'],
-            'coords':   [[c[0], c[1]] for c in coords],
-            'elevPts':  [round(p[2], 1) for p in elev_pts],
-            'elevKm':   [round(d/1000, 2) for d in elev_cum],
+            'label':     s['label'],
+            'name':      name,
+            'color':     s['color'],
+            'coords':    [[c[0], c[1]] for c in coords],
+            'elevPts':   [round(p[2], 1) for p in elev_pts],
+            'elevKm':    [round(d/1000, 2) for d in elev_cum],
             'waypoints': important_wpts,
             'stats': {
-                'dist_km':  round(dist / 1000, 1),
-                'gain_m':   round(gain),
-                'loss_m':   round(loss),
-                'min_ele':  round(min_e),
-                'max_ele':  round(max_e),
+                'dist_km': round(dist / 1000, 1),
+                'gain_m':  round(gain),
+                'loss_m':  round(loss),
+                'min_ele': round(min_e),
+                'max_ele': round(max_e),
             }
         })
-    return data
+    return data, full_coords
+
 
 HTML_TEMPLATE = r'''<!DOCTYPE html>
 <html lang="fr">
@@ -330,7 +384,7 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: #1a1a2e; color: #
 <div id="header">
   <h1>MIUT 2026 <small>Madère Ultra-Trail</small></h1>
   <div id="legend"></div>
-  <div id="pr-toggle" onclick="togglePR()">🔒 Zones PR payantes</div>
+  <div id="pr-toggle" onclick="togglePR()">🔒 Sections PR payantes</div>
 </div>
 
 <div id="main">
@@ -343,7 +397,7 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: #1a1a2e; color: #
 
 <script>
 const STAGES   = __STAGES_JSON__;
-const PR_ZONES = __PR_ZONES_JSON__;
+const PR_SEGS  = __PR_SEGS_JSON__;
 
 // ── Map ────────────────────────────────────────────────────────────────────
 const map = L.map('map', { zoomControl: true });
@@ -400,51 +454,32 @@ STAGES.forEach(s => {
   }).addTo(map);
 });
 
-// ── PR Zones layer ─────────────────────────────────────────────────────────
+// ── PR sections layer (real GPX polylines, not circles) ────────────────────
 const prLayerGroup = L.layerGroup();
 let prVisible = false;
 
 function feeClass(pr) {
-  if (pr.fee === 'Gratuit') return 'free';
-  if (pr.fee === '€10.50')  return 'exp';
-  if (pr.status === 'closed') return 'closed';
+  if (pr.fee === 'Gratuit')    return 'free';
+  if (pr.fee === '€10.50')     return 'exp';
+  if (pr.status === 'closed')  return 'closed';
   return 'std';
 }
 
-function prCircleColor(pr) {
-  if (pr.status === 'closed')  return '#777';
+function prLineColor(pr) {
+  if (pr.status === 'closed')  return '#888';
   if (pr.fee === 'Gratuit')    return '#27ae60';
   if (pr.fee === '€10.50')     return '#c0392b';
   return '#f39c12';
 }
 
-PR_ZONES.forEach(pr => {
-  const col   = prCircleColor(pr);
-  const cls   = feeClass(pr);
+PR_SEGS.forEach(pr => {
+  const col  = prLineColor(pr);
+  const cls  = feeClass(pr);
   const badge = pr.status === 'closed' ? '🚫' : pr.fee === 'Gratuit' ? '✅' : pr.fee === '€10.50' ? '💰💰' : '💰';
+  const statusLabel = pr.status === 'closed'
+    ? '<br><b style="color:#e74c3c">⛔ FERMÉ EN 2026</b>'
+    : pr.status === 'partial' ? '<br><b style="color:#f39c12">⚠ Partiellement ouvert</b>' : '';
 
-  // Zone circle
-  const circle = L.circle([pr.lat, pr.lon], {
-    radius: pr.radius,
-    color: col, weight: 2, opacity: .7,
-    fillColor: col, fillOpacity: .12,
-    dashArray: pr.status === 'closed' ? '6,4' : null,
-  });
-
-  // Marker with PR code badge
-  const marker = L.marker([pr.lat, pr.lon], {
-    icon: L.divIcon({
-      className: '',
-      html: `<div style="background:${col};color:#fff;font-weight:800;font-size:10px;
-             padding:2px 7px;border-radius:8px;border:1.5px solid #fff;
-             box-shadow:0 1px 5px rgba(0,0,0,.5);white-space:nowrap;opacity:.95">${pr.code}</div>`,
-      iconAnchor: [0, 10],
-    }),
-    zIndexOffset: 500,
-  });
-
-  const statusLabel = pr.status === 'closed' ? '<br><b style="color:#e74c3c">⛔ FERMÉ EN 2026</b>'
-                    : pr.status === 'partial' ? '<br><b style="color:#f39c12">⚠ Partiellement ouvert</b>' : '';
   const popupHtml = `
     <div class="pr-popup">
       <div class="pr-popup-code">${pr.code} ${badge}</div>
@@ -454,10 +489,36 @@ PR_ZONES.forEach(pr => {
       <a class="pr-popup-link" href="https://simplifica.madeira.gov.pt/services/78-82-259" target="_blank">→ Réserver sur Simplifica</a>
     </div>`;
 
-  circle.bindPopup(popupHtml);
-  marker.bindPopup(popupHtml);
+  // Draw each segment as a highlighted polyline over the MIUT track
+  pr.segments.forEach(seg => {
+    // White halo for readability
+    const halo = L.polyline(seg.coords, {
+      color: '#fff', weight: 11, opacity: 0.55, smoothFactor: 1,
+    });
+    // Colored dashed line on top
+    const line = L.polyline(seg.coords, {
+      color: col, weight: 7, opacity: 0.9,
+      dashArray: pr.status === 'closed' ? '4,6' : '10,5',
+      smoothFactor: 1,
+    });
+    line.bindPopup(popupHtml);
+    halo.bindPopup(popupHtml);
+    prLayerGroup.addLayer(halo);
+    prLayerGroup.addLayer(line);
+  });
 
-  prLayerGroup.addLayer(circle);
+  // Label at segment midpoint
+  const marker = L.marker([pr.lat, pr.lon], {
+    icon: L.divIcon({
+      className: '',
+      html: `<div style="background:${col};color:#fff;font-weight:800;font-size:10px;
+             padding:2px 7px;border-radius:8px;border:1.5px solid #fff;
+             box-shadow:0 1px 5px rgba(0,0,0,.5);white-space:nowrap;opacity:.95">${pr.code}</div>`,
+      iconAnchor: [0, 10],
+    }),
+    zIndexOffset: 600,
+  });
+  marker.bindPopup(popupHtml);
   prLayerGroup.addLayer(marker);
 });
 
@@ -467,11 +528,11 @@ function togglePR() {
   if (prVisible) {
     prLayerGroup.addTo(map);
     btn.classList.add('active');
-    btn.textContent = '🔓 Zones PR payantes (actif)';
+    btn.textContent = '🔓 Sections PR payantes (actif)';
   } else {
     map.removeLayer(prLayerGroup);
     btn.classList.remove('active');
-    btn.textContent = '🔒 Zones PR payantes';
+    btn.textContent = '🔒 Sections PR payantes';
   }
 }
 
@@ -564,11 +625,11 @@ const prContent = document.createElement('div');
 prContent.className = 'tab-content';
 prContent.style.flexDirection = 'column';
 prContent.innerHTML = `
-  <p class="section-title">Sentiers PR payants 2026</p>
+  <p class="section-title">Sections PR payantes 2026</p>
   <div style="font-size:.75rem;color:#aaa;margin-bottom:10px;line-height:1.5">
-    Réservation obligatoire sur
+    Portions du tracé MIUT classées PR. Réservation sur
     <a href="https://simplifica.madeira.gov.pt/services/78-82-259" target="_blank" style="color:#3498db">Simplifica</a>.
-    Cliquez sur un PR pour le localiser sur la carte.
+    Cliquez pour zoomer sur la section.
   </div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:.72rem">
     <span style="background:#c0392b;color:#fff;padding:2px 7px;border-radius:8px;font-weight:700">€10.50 PR1</span>
@@ -587,12 +648,11 @@ prBtn.addEventListener('click', () => {
   prContent.classList.add('active');
   document.querySelectorAll('.legend-item').forEach(el => el.classList.remove('active'));
   polylines.forEach(p => p.setStyle({ weight: 4, opacity: 0.65 }));
-  // Auto-enable PR zones
   if (!prVisible) togglePR();
 });
 
 const prList = document.getElementById('pr-list');
-PR_ZONES.forEach(pr => {
+PR_SEGS.forEach(pr => {
   const cls = feeClass(pr);
   const badgeClass = cls === 'exp' ? 'expensive' : cls === 'free' ? 'free' : cls === 'closed' ? 'closed' : 'standard';
   const feeLabel = pr.status === 'closed' ? '⛔ Fermé' : pr.fee;
@@ -644,16 +704,19 @@ setTimeout(() => {
 </html>
 '''
 
+
 def main():
     base = Path(__file__).parent
-    data = build_stage_data(base)
+    data, full_coords = build_stage_data(base)
     if not data:
         print("Aucun fichier GPX trouvé.")
         return
 
+    pr_segments = build_pr_segments(full_coords)
+
     html = HTML_TEMPLATE \
-        .replace('__STAGES_JSON__',   json.dumps(data,     ensure_ascii=False)) \
-        .replace('__PR_ZONES_JSON__', json.dumps(PR_ZONES, ensure_ascii=False))
+        .replace('__STAGES_JSON__', json.dumps(data,         ensure_ascii=False)) \
+        .replace('__PR_SEGS_JSON__', json.dumps(pr_segments, ensure_ascii=False))
 
     out = base / 'MIUT2026_carte.html'
     out.write_text(html, encoding='utf-8')
@@ -661,9 +724,17 @@ def main():
     for s in data:
         st = s['stats']
         print(f"  {s['label']:12s} {st['dist_km']} km  +{st['gain_m']}m  -{st['loss_m']}m")
-    print(f"\n  {len(PR_ZONES)} zones PR chargées ({sum(1 for p in PR_ZONES if p['fee']!='Gratuit' and p['status']!='closed')} payantes, "
-          f"{sum(1 for p in PR_ZONES if p['status']=='closed')} fermées, "
-          f"{sum(1 for p in PR_ZONES if p['fee']=='Gratuit')} gratuites)")
+
+    n_pay = sum(1 for p in pr_segments if p['fee'] != 'Gratuit' and p['status'] != 'closed')
+    n_cls = sum(1 for p in pr_segments if p['status'] == 'closed')
+    n_fre = sum(1 for p in pr_segments if p['fee'] == 'Gratuit')
+    print(f"\n  {len(pr_segments)} sections PR sur tracé "
+          f"({n_pay} payantes, {n_cls} fermées, {n_fre} gratuites)")
+    for pr in pr_segments:
+        total_pts = sum(len(s['coords']) for s in pr['segments'])
+        stages_hit = ', '.join(set(s['stage'] for s in pr['segments']))
+        print(f"    {pr['code']:6s} {pr['fee']:8s} [{stages_hit}] {total_pts} pts")
+
 
 if __name__ == '__main__':
     main()
